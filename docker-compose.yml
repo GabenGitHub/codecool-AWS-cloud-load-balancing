@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - 3306:3306
+
+  wp:
+    image: wordpress:5.6
+    container_name: wp_cont
+    volumes:
+     - wp_data:/var/www/html
+    restart: on-failure
+    environment:
+      WORDPRESS_DB_HOST: team2-week15-wp-db.cx72g62ogcd7.eu-central-1.rds.amazonaws.com:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |-
+        define('WP_HOME', 'http://team2-week15-lb-1795661125.eu-central-1.elb.amazonaws.com/');
+        define('WP_SITEURL', 'http://team2-week15-lb-1795661125.eu-central-1.elb.amazonaws.com/');
+    ports:
+     - 8000:80
+
+volumes:
+  wp_data:
+  db_data:
